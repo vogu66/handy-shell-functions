@@ -1,0 +1,14 @@
+#!/bin/bash
+
+	echo 'script works';
+	sudo pacman-mirrors --fasttrack;
+	sudo pacman -Syyu;
+	paccache -r;
+	paccache -rk1 ;
+	paccache -ruk0 ;
+	pacman -Sc ;
+	pacman -Rns $(pacman -Qtdq);
+	pacman -Qqe > ~/.pkglist.txt;
+	echo 'errors:';
+	systemctl --failed;
+	journalctl -p 3 -xb;
