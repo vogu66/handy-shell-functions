@@ -30,6 +30,7 @@ In addition, `./Bin` in this repository is meant as the folder `~/.bin`, and sho
 
 + kil - kill a process by name
 + detach - detach a process from the shell (disown) and remove the text output
++ gitUser - set the right user for your git repo authomatically
 + ex - extract, from the Manjaro bash_profile
 + show your personal functions and stuff
 

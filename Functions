@@ -17,6 +17,64 @@ detach ()
 	disown '$@ < /dev/null &> /dev/null'
 }
 
+# git with the right user
+# (see https://gist.github.com/jexchan/2351996/)
+# 
+# $1 = c (clone) or a (add origin) or s (set user)
+# $2 = ssh link or just name of repo
+#
+# what needs to be changed for other users : 
+# vogu.github in the 2 global addresses is in my ssh config file, it's user-set (see https://gist.github.com/jexchan/2351996/)
+# the name and mail variables should be adapted
+# the server name if your git isn't for github
+#
+gitUser ()
+{
+
+	address=$2
+	dir="./"
+	if [ "${address:3:1}" = "@" ]
+	then
+		fullssh="git@vogu.github.com:vogu66/${address:23:${#address}}"
+		dir="$dir${${address:23:${#address}}%".git"}"
+		echo "in 1 $dir"
+	else 
+		if [ "$address" != "" ]
+		then
+			fullssh="git@vogu.github.com:vogu66/$address.git"
+			dir="$dir$address"
+			echo "in 2 $dir"
+		else
+			fullssh=""
+		fi
+	fi
+	echo "dir :"
+	echo $dir
+	echo "address : "
+	echo $fullssh
+	name="vogu66"
+	echo "user.name :"
+	echo $name
+	mail="24728720+vogu66@users.noreply.github.com"
+	echo "user.email:"
+	echo $mail
+	
+	if [ $1 = "c" ]
+	then
+		git clone $fullssh
+		cd $dir
+	fi
+	
+	git config user.name $name
+	git config user.email $mail
+	
+	if [ $1 = "a" ]
+	then
+		git remote add origin $fullssh
+		git push --set-upstream origin master
+	fi
+}
+
 # From the Manjaro default bash_profile :
 # ex - archive extractor
 # usage: ex <file>
