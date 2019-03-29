@@ -5,8 +5,7 @@
 # kill any process by name
 kil()
 {
-	id=$(pgrep $1);
-	kill -15 $id
+	pkill $@ && pkill $@
 }
 
 # detach stuff from the terminal and remove all shell output,
