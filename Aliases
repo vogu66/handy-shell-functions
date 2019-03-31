@@ -31,6 +31,7 @@ alias pdft2='pdflatex -shell-escape *.tex && bibtex *.aux && pdflatex -shell-esc
 # cleanup is in bin
 alias cleanup='sudo bash cleanup'
 alias clear='clear && clear'
+alias trash='gvfsd-trash'
 
 
 # kill alarm
