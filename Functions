@@ -28,42 +28,42 @@ git66 ()
 }
 gitUser ()
 # $1-> action
-# $2-> name or full ssh
-# $3-> server from config
-# $4-> user
-# $5-> mail
-# $6-> user for ssh
+# $2-> server from config
+# $3-> user.name
+# $4-> mail
+# $5-> user for ssh
+# $6-> name of repo or full ssh
 {
-	if [ "$6" != "" ]
+	if [ -z "$6" ]
 	then
 		sshU="git"
 	else
 		sshU=$6
 	fi
 	
-	name=$4
+	name=$3
 	if [ $1 != "s" ]
 	then
 		echo "user.name :"
 		echo $name
 	fi
-	mail=$5
+	mail=$4
 	if [ $1 != "s" ]
 	then
 		echo "user.email:"
 		echo $mail
 	fi
 		
-	address=$2
+	address=$5
 	dir="./"
 	if [ "${address:3:1}" = "@" ]
 	then
-		fullssh="$sshU@$3:${address:16:${#address}}"
+		fullssh="$sshU@$2:${address:16:${#address}}"
 		dir="$dir${${address:16:${#address}}%".git"}"
 	else 
 		if [ "$address" != "" ]
 		then
-			fullssh="git@$3:$name/$address.git"
+			fullssh="$sshU@$2:$name/$address.git"
 			dir="$dir$address"
 		else
 			fullssh=""
