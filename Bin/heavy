@@ -4,27 +4,42 @@ source ~/.functions
 
 ask()
 {
-	echo
-	read -p "Do you want to start $1?" -n 1 -r
-	echo
-
-	if [[ $REPLY =~ ^[Yy]$ ]]
+	if [ -z "$(pidof -x $1)" ]
 	then
-		detach $@
-		return 0
+		echo
+		read -p "Do you want to start $1?" -n 1 -r
+		echo
+
+		if [[ $REPLY =~ ^[Yy]$ ]]
+		then
+			detach $@
+			echo "started"
+		fi
 	fi
 }
 
-internet=$(ask nm-applet);
-echo
-if (! $internet)
-then
-	
-	ask discord
-	ask caprine
-	ask skype
-
-fi
 
 ask redshift
-ask shalarm 12:00
+ask shalarm 21:00
+
+ask nm-applet
+
+if [ -n "$(pidof nm-applet)" ]
+then
+
+	ask caprine
+	ask skypeforlinux
+	# discord starts Discord so there is a trick
+	if [ -z "$(pidof -x Discord)" ]
+	then
+		echo
+		read -p "Do you want to start Discord?" -n 1 -r
+		echo
+
+		if [[ $REPLY =~ ^[Yy]$ ]]
+		then
+			detach discord
+			echo "started"
+		fi
+	fi
+fi

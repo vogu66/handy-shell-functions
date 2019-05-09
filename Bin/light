@@ -4,28 +4,32 @@ source ~/.functions
 
 ask()
 {
-	echo
-	read -p "Do you want to kill $1?" -n 1 -r
-	echo
-
-	if [[ $REPLY =~ ^[Yy]$ ]]
+	if [ -n "$(pidof -x $1)" ]
 	then
-		kil $1
-		return 0
+		echo
+		read -p "Do you want to kill $1?" -n 1 -r
+		echo
+
+		if [[ $REPLY =~ ^[Yy]$ ]]
+		then
+			kil $1
+			echo "killed"
+		fi
 	fi
 }
 
-internet=$(ask nm-applet);
-if (! $internet)
+ask nm-applet
+
+if [ -z "$(pidof nm-applet)" ]
 then
-	kil Discord;
-	kil caprine;
-	kil skype;
+	cmd="kil"
 else
-	ask Discord;
-	ask caprine;
-	ask skype;
+	cmd="ask"
 fi
+
+$cmd Discord
+$cmd caprine;
+$cmd skypeforlinux;
 
 ask redshift;
 ask shalarm;
