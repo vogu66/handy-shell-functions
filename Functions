@@ -18,80 +18,13 @@ detach ()
 
 # git with the right user
 # (see https://gist.github.com/jexchan/2351996/)
-# 
+#
 # $1 = c (clone) or a (add origin) or s (set user)
 # $2 = ssh link or just name of repo
 #
 git66 ()
-{	
-	gitUser $1 $2 vogu.github.com vogu66 24728720+vogu66@users.noreply.github.com
-}
-gitUser ()
-# $1-> action
-# $2-> server from config
-# $3-> user.name
-# $4-> mail
-# $5-> user for ssh
-# $6-> name of repo or full ssh
 {
-	if [ -z "$6" ]
-	then
-		sshU="git"
-	else
-		sshU=$6
-	fi
-	
-	name=$3
-	if [ $1 != "s" ]
-	then
-		echo "user.name :"
-		echo $name
-	fi
-	mail=$4
-	if [ $1 != "s" ]
-	then
-		echo "user.email:"
-		echo $mail
-	fi
-		
-	address=$5
-	dir="./"
-	if [ "${address:3:1}" = "@" ]
-	then
-		fullssh="$sshU@$2:${address:16:${#address}}"
-		dir="$dir${${address:16:${#address}}%".git"}"
-	else 
-		if [ "$address" != "" ]
-		then
-			fullssh="$sshU@$2:$name/$address.git"
-			dir="$dir$address"
-		else
-			fullssh=""
-		fi
-	fi
-	
-	if [ $1 != "s" ]
-	then
-		echo "dir :"
-		echo $dir
-		echo "address : "
-		echo $fullssh
-	fi
-	
-	if [ $1 = "c" ]
-	then
-		git clone $fullssh
-		cd $dir
-	fi
-	
-	git config user.name $name
-	git config user.email $mail
-	
-	if [ $1 = "a" ]
-	then
-		git remote add origin $fullssh
-		git push --set-upstream origin master
-	fi
+	gitUser $1 $2 vogu.github.com vogu66 24728720+vogu66@users.noreply.github.com
 }
 
 
