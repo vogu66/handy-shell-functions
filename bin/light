@@ -30,6 +30,7 @@ fi
 $cmd Discord
 $cmd caprine;
 $cmd skypeforlinux;
+$cmd pamac-tray
 
 ask redshift;
 ask shalarm;
