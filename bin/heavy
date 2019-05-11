@@ -19,7 +19,7 @@ ask()
 }
 
 
-ask redshift
+ask redshift-gtk -l 0.00:0.00
 ask shalarm 21:00
 
 ask nm-applet
