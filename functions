@@ -24,7 +24,7 @@ detach ()
 #
 git66 ()
 {
-	gitUser $1 $2 vogu.github.com vogu66 24728720+vogu66@users.noreply.github.com
+	gitUser vogu.github.com vogu66 24728720+vogu66@users.noreply.github.com $@
 }
 
 

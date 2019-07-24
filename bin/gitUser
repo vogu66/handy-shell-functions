@@ -1,67 +1,126 @@
 #!/bin/bash
 
+# $1 server from ssh config
+# $2 user.name
+# $3 user.email
+# $4 action -- if 3 arguments : equals to "s", set
+# $5 name of repo or full ssh
+# $6 user for ssh
+#
+# action : c (clone), a (add origin), s (set user)
+#
+# name of repo or full ssh :
+# If just a name, completed with "$6@server:"
+# if no @, completed with $6 and server replaced
+# if complete address, with an "@", $6 ignored and server replaced
+# so, for example :
+# 	git@github.com:vogu66/handy-shell-functions.git
+# 	github.com:vogu66/handy-shell-functions.git
+# 	vogu66/handy-shell-functions
+# 	handy-shell-functions
+# they should all work for user vogu66. note that the last option
+# only adds the username if there is no /, so if there are several
+# / in the name you can't use it
+# note the .git that isn't present when the server isn't included
+#
+# $6 : if empty, name is "git"
 
-# $1-> action
-# $2-> server from config
-# $3-> user.name
-# $4-> mail
-# $5-> user for ssh
-# $6-> name of repo or full ssh
 {
-	if [ -z "$6" ]
-	then
-		sshU="git"
-	else
-		sshU=$6
-	fi
 
-	name=$3
-	if [ $1 != "s" ]
+	# make sure of the action
+	if [ -z "$4" ];
 	then
-		echo "user.name :"
-		echo $name
-	fi
-	mail=$4
-	if [ $1 != "s" ]
-	then
-		echo "user.email:"
-		echo $mail
-	fi
-
-	address=$5
-	dir="./"
-	if [ "${address:3:1}" = "@" ]
-	then
-		fullssh="$sshU@$2:${address:16:${#address}}"
-		dir="$dir${${address:16:${#address}}%".git"}"
+		action="s"
 	else
-		if [ "$address" != "" ]
+		action="$4"
+	fi
+	echo "action :"
+	echo "$action"
+	echo
+
+	name=$2
+	echo "user.name :"
+	echo $name
+	echo
+
+	email=$3
+	echo "user.email:"
+	echo $email
+	echo
+
+	if [ $action != "s" ]
+	then
+
+		sshS=$1
+		echo "ssh server used :"
+		echo $sshS
+
+		if [ -z "$6" ]
 		then
-			fullssh="$sshU@$2:$name/$address.git"
-			dir="$dir$address"
+			sshU="git"
 		else
-			fullssh=""
+			sshU=$6
+		fi
+
+		address=$5
+
+		dir="./"
+
+		atIndex=`expr index "$address" "@"`
+		slashIndex=`expr index "$address" "/"`
+		colonIndex=`expr index "$address" ":"`
+
+		if [ "$atIndex" -ne "0" ]
+		then # "there is a @"
+			fullssh="$sshU@$sshS:${address:$colonIndex:${#address}}"
+			dir=$dir${address:$slashIndex:${#address}}
+			dir=${dir%%.git}
+		else # "there is no @"
+			if [ "$colonIndex" -ne "0" ]
+			then # there is a ":"
+				fullssh=$sshU"@"$sshS":"${address:$colonIndex:${#address}}
+				dir=$dir${address:$slashIndex:${#address}}
+				dir=${dir%%.git}
+			else # there is no ":"
+				if [ "$slashIndex" -ne "0" ]
+				then # there is a /
+					fullssh=$sshU"@"$sshS":"$address".git"
+					dir=$dir${address:$slashIndex:${#address}}
+				else # there is no / --> Then the user has to be added
+					fullssh=$sshU"@"$sshS":"$name"/"$address".git"
+					dir=$dir$address
+				fi
+			fi
+		fi
+
+
+		echo
+		#echo "dir :"
+		#echo $dir
+		echo "address : "
+		echo $fullssh
+		echo
+		read -p "Is this all right?" -n 1 -r
+		echo
+
+		if [[ $REPLY =~ ^[Nn]$ ]]
+		then
+			exit 0
 		fi
 	fi
 
-	if [ $1 != "s" ]
-	then
-		echo "dir :"
-		echo $dir
-		echo "address : "
-		echo $fullssh
-	fi
+	# add a confirm...
 
-	if [ $1 = "c" ]
+	if [ $action = "c" ]
 	then
 		git clone $fullssh
 		cd $dir
 	fi
 
 	git config user.name $name
-	git config user.email $mail
+	git config user.email $email
 
-	if [ $1 = "a" ]
+	if [ $action = "a" ]
 	then
 		git remote add origin $fullssh
 		git push --set-upstream origin master
