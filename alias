@@ -33,7 +33,6 @@ alias cleanup='sudo bash cleanup'
 alias clear='clear && clear'
 alias trash='gvfsd-trash'
 
-
 # kill alarm
 # all functions are in Functions
 alias kila="kil shalarm"
