@@ -1,0 +1,11 @@
+#!/bin/bash
+# clean stop of the shared screen (or all shared screens,
+# careful if several ones)
+# restarts conky as well, with the given starting script,
+# to adjust to the resolution change
+
+pkill x11vnc
+xrandr --output VIRTUAL1 --off && xrandr --delmode VIRTUAL1 "distant" && xrandr && xrandr --rmmode "distant"
+
+sh "/home/vogu/.conky/conky-start2.sh" < /dev/null &>/dev/null &
+disown 'sh "/home/vogu/.conky/conky-start2.sh" < /dev/null &> /dev/null'
