@@ -1,0 +1,54 @@
+#!/bin/bash
+# script automatically extends screen and backs up on another
+# laptop that is used as second screen
+#
+# uses vnc for screen sharing
+#
+# expects target computer to have sshd started for file transfer
+# expects target computer to start a vnc client manually
+#
+# See https://askubuntu.com/questions/377937/how-to-set-a-custom-resolution
+# to add a resolution
+
+# ssh -i ~/.ssh/home_screen 10.0.0.2
+
+
+
+read -p "Do you want to extend screen?" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	xrandr --newmode "distant" 106.50 1440 1528 1672 1904  900 903 909 934 -Hsync -Vsync
+	xrandr --addmode VIRTUAL1 "distant"
+	xrandr --output VIRTUAL1 --mode "distant"
+	# xrandr --output VIRTUAL1 --right-of LVDS1
+	xrandr --output VIRTUAL1 --pos 1366x-66 # adjust for the mouse not to leave the screen on a corner
+	x11vnc -display :0 -clip 1440x900+1366+0 -multiptr -forever < /dev/null &>/dev/null &
+	disown "x11vnc -display :0 -clip 1440x900+1366+0 -multiptr -forever"
+	sh "/home/vogu/.conky/conky-start2.sh" < /dev/null &>/dev/null &
+	disown 'sh "/home/vogu/.conky/conky-start2.sh" < /dev/null &> /dev/null'
+fi
+
+echo
+
+# backup :
+
+read -p "Do you want to backup?" -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]
+then
+	read -p "Quiet?" -n 1 -r
+	echo
+	if [[ $REPLY =~ ^[Yy]$ ]]
+	then
+		rsync -az --delete --quiet -e "ssh -i ~/.ssh/home_screen" ~/DATA/my_files vogu@10.0.0.2:~/DATA < /dev/null &>/dev/null &
+		disown 'rsync -az --delete --quiet -e "ssh -i ~/.ssh/home_screen" ~/DATA/my_files vogu@10.0.0.2:~/DATA'
+		rsync -az --delete --quiet -e "ssh -i ~/.ssh/home_screen" ~/DATA/Test vogu@10.0.0.2:~/DATA/Test < /dev/null &>/dev/null &
+		disown 'rsync -az --delete --quiet -e "ssh -i ~/.ssh/home_screen" ~/DATA/Test vogu@10.0.0.2:~/DATA/Test'
+	else
+		rsync -az -P --delete -e "ssh -i ~/.ssh/home_screen" ~/DATA/Test vogu@10.0.0.2:~/DATA/Test &
+		rsync -az -P --delete -e "ssh -i ~/.ssh/home_screen" ~/DATA/my_files vogu@10.0.0.2:~/DATA
+	fi
+else
+	echo "you did not backup right now !"
+fi
