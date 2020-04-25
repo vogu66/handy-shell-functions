@@ -22,6 +22,7 @@ ask nm-applet
 
 if [ -z "$(pidof nm-applet)" ]
 then
+	systemctl stop NetworkManager
 	cmd="kil"
 else
 	cmd="ask"

@@ -19,6 +19,7 @@ ask()
 }
 
 
+# add coordinates instead of 0.00:0.00
 ask redshift-gtk -l 0.00:0.00
 ask shalarm 21:00
 
@@ -26,6 +27,7 @@ ask nm-applet
 
 if [ -n "$(pidof nm-applet)" ]
 then
+	systemctl start NetworkManager
 	ask pamac-tray
 	ask caprine
 	ask skypeforlinux

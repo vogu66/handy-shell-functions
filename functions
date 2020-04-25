@@ -63,4 +63,12 @@ aliases ()
 functions ()
 {
 	cat ~/.functions
+	echo && echo "############################" && echo "in .bin :" && echo "############################" && echo
+	ls -1 ~/.bin
+}
+
+# show cheats
+cheats ()
+{
+	ls ~/.cheat
 }
