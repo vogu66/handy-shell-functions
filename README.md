@@ -2,6 +2,8 @@
 
 A collection of shell functions, scripts and aliases that can come in handy (zshell is used, on manjaro for the scripts)
 
+**Now that I've switch to [chezmoi](https://github.com/twpayne/chezmoi) to manage my files, I will archive this repository. See my [dotfiles](https://github.com/vogu66/dotfiles) for my current repo. Although at the time of writing not everything is there yet since I still need to remove some of the personal data. -- 2020-06-23**
+
 -----
 
 ## Architecture
